@@ -1,5 +1,7 @@
 package br.ufc.mdcc.sd.sda.servicos;
 
-public interface IServicoDiretorio {
+import java.rmi.Remote;
+
+public interface IServicoDiretorio extends Remote{
 
 }
