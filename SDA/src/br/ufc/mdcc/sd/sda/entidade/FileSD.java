@@ -1,12 +1,14 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
 
-public abstract class FileSD {
+public class FileSD {
 	
 	private Ufid ufid;
 	
 	private Descritor descritor;
-
+	
+	private byte[] dados;
+	
 	/**
 	 * @param ufid
 	 */
@@ -27,5 +29,14 @@ public abstract class FileSD {
 	public void setDescritor(Descritor descritor) {
 		this.descritor = descritor;
 	}
+	
+	public byte[] getDados() {
+		return dados;
+	}
+
+	public void setDados(byte[] dados) {
+		this.dados = dados;
+	}
+	
 		
 }

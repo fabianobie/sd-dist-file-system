@@ -1,20 +1,17 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
+import java.io.File;
+
 public class Arquivo extends FileSD{
 	
-	private Byte[] dados;
+	private File file;
 	
 	public Arquivo(Ufid ufid) {
 		super(ufid);
+		// TODO Auto-generated constructor stub
 	}
 
-	public Byte[] getDados() {
-		return dados;
-	}
-
-	public void setDados(Byte[] dados) {
-		this.dados = dados;
-	}
 	
+
 	
 }

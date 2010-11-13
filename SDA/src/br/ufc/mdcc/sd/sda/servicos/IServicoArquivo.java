@@ -3,11 +3,9 @@
  */
 package br.ufc.mdcc.sd.sda.servicos;
 
-import java.io.File;
 import java.rmi.Remote;
 
-import javax.management.Descriptor;
-
+import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
 import br.ufc.mdcc.sd.sda.exceptions.PosicaoIvalidaException;
 
@@ -27,9 +25,9 @@ public interface IServicoArquivo extends Remote {
 	
 	public void delete(Ufid ufid);
 	
-	public Descriptor getAttributes(Ufid ufid);
+	public Descritor getAttributes(Ufid ufid);
 	
-	public void setAttributes(Ufid ufid, Descriptor descritor);
+	public void setAttributes(Ufid ufid, Descritor descritor);
 	
 	public void getChavePublica();
 }

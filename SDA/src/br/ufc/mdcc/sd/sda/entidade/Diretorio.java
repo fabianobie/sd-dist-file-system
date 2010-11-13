@@ -13,7 +13,6 @@ public class Diretorio extends FileSD{
 		super(ufid);
 		mapeamento = new HashMap<String, Ufid>();
 		getDescritor().setTipo(TipoArquivo.DIRECTORY);
-		
 	}
 	
 	public HashMap<String, Ufid> getMapeamento() {
