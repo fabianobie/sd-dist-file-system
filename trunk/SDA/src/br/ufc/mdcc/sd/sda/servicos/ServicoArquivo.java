@@ -5,17 +5,21 @@ import java.io.File;
 import javax.management.Descriptor;
 
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
+import br.ufc.mdcc.sd.sda.exceptions.PosicaoIvalidaException;
 
 public class ServicoArquivo implements IServicoArquivo {
 
 	@Override
-	public File read(Ufid ufid, int i, int n) {
-		// TODO Auto-generated method stub
+	public byte[] read(Ufid ufid, int offset, int size)
+			throws PosicaoIvalidaException {
+		File arquivoLocal =  new File(ufid.toString());
+		
+		
 		return null;
 	}
 
 	@Override
-	public void write(Ufid ufid, int i, File dados) {
+	public void write(Ufid ufid, int offset, byte[] dados) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -27,7 +31,7 @@ public class ServicoArquivo implements IServicoArquivo {
 	}
 
 	@Override
-	public void truncate(Ufid ufid, int l) {
+	public void truncate(Ufid ufid, int offset) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -49,5 +53,5 @@ public class ServicoArquivo implements IServicoArquivo {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 }

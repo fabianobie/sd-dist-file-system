@@ -1,6 +1,7 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Descritor extends File {
@@ -12,7 +13,7 @@ public class Descritor extends File {
 	private int contador;
 	private int proprietario;
 	private TipoArquivo tipo;
-	private ListaAcesso listaAcesso;
+	private ArrayList<Permissao> listaAcesso;
 	
 	public double getTamanho() {
 		return tamanho;
@@ -56,10 +57,10 @@ public class Descritor extends File {
 	public void setTipo(TipoArquivo tipo) {
 		this.tipo = tipo;
 	}
-	public ListaAcesso getListaAcesso() {
+	public ArrayList<Permissao> getListaAcesso() {
 		return listaAcesso;
 	}
-	public void setListaAcesso(ListaAcesso listaAcesso) {
+	public void setListaAcesso(ArrayList<Permissao> listaAcesso) {
 		this.listaAcesso = listaAcesso;
 	}
 
