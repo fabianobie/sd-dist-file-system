@@ -2,15 +2,15 @@ package br.ufc.mdcc.sd.sda.entidade;
 
 import java.util.HashMap;
 
-public class Diretorio extends Arquivo{
+public class Diretorio extends FileSD{
 	
 	private HashMap<String, Ufid> mapeamento;
 	
 	/**
 	 * 
 	 */
-	public Diretorio() {
-		
+	public Diretorio(Ufid ufid) {
+		super(ufid);
 		mapeamento = new HashMap<String, Ufid>();
 		getDescritor().setTipo(TipoArquivo.DIRECTORY);
 		

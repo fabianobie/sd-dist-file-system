@@ -4,16 +4,19 @@ import java.io.File;
 
 import javax.management.Descriptor;
 
+import br.ufc.mdcc.sd.sda.entidade.RSA;
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
 import br.ufc.mdcc.sd.sda.exceptions.PosicaoIvalidaException;
 
 public class ServicoArquivo implements IServicoArquivo {
-
+	
+	private RSA chaves = new RSA();
+	
 	@Override
 	public byte[] read(Ufid ufid, int offset, int size)
 			throws PosicaoIvalidaException {
-		File arquivoLocal =  new File(ufid.toString());
-		
+			File arquivoLocal =  new File(ufid.toString());
+			
 		
 		return null;
 	}
@@ -51,6 +54,12 @@ public class ServicoArquivo implements IServicoArquivo {
 	@Override
 	public void setAttributes(Ufid ufid, Descriptor descritor) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getChavePublica() {
+		this.chaves.getChavePublica();
 		
 	}
 	
