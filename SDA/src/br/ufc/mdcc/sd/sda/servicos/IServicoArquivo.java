@@ -30,5 +30,6 @@ public interface IServicoArquivo extends Remote {
 	public Descriptor getAttributes(Ufid ufid);
 	
 	public void setAttributes(Ufid ufid, Descriptor descritor);
-
+	
+	public void getChavePublica();
 }

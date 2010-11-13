@@ -1,37 +1,20 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
-import java.io.File;
-
-public class Arquivo {
+public class Arquivo extends FileSD{
 	
-	private Ufid ufid;
+	private Byte[] dados;
 	
-	private File dados;
-	
-	private Descritor descritor;
-
-	public Ufid getUfid() {
-		return ufid;
+	public Arquivo(Ufid ufid) {
+		super(ufid);
 	}
 
-	public void setUfid(Ufid ufid) {
-		this.ufid = ufid;
-	}
-
-	public File getDados() {
+	public Byte[] getDados() {
 		return dados;
 	}
 
-	public void setDados(File dados) {
+	public void setDados(Byte[] dados) {
 		this.dados = dados;
 	}
-
-	public Descritor getDescritor() {
-		return descritor;
-	}
-
-	public void setDescritor(Descritor descritor) {
-		this.descritor = descritor;
-	}
-		
+	
+	
 }
