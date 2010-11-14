@@ -1,5 +1,6 @@
 package br.ufc.mdcc.sd.sda.servicos;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -15,18 +16,17 @@ import br.ufc.mdcc.sd.sda.util.FileUtil;
 public class ServicoArquivo implements IServicoArquivo {
 
 	private static URI URI_SD;
+	private static final int COUNT_FILE = 0;
+	private RSA chaves = new RSA();
+
 	/**
 	 * 
 	 */
 	public ServicoArquivo() {
 		super();
-		
 		try { URI_SD = new URI("127.0.0.1:1097"); } 
 		catch (URISyntaxException e) { System.out.println("Erro de Sintaxe: Endereço errado !");}
 	}
-
-	private static final int COUNT_FILE = 0;
-	private RSA chaves = new RSA();
 
 	@Override
 	public byte[] read(Ufid ufid, int offset, int size)
@@ -82,12 +82,23 @@ public class ServicoArquivo implements IServicoArquivo {
 
 	@Override
 	public void truncate(Ufid ufid, int offset) {
+		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
 
+		byte[] tmpDados = new byte[offset];
+
+		for (int i = 0; i < offset; i++) {
+				tmpDados[i] = arquivo.getDados()[i];
+		}
+
+		arquivo.setDados(tmpDados);
+		FileUtil.serializarFile(arquivo);
 	}
 
 	@Override
 	public void delete(Ufid ufid) {
-		
+		File arquivo = new File(FileUtil.DIR_ROOT+File.separator+ufid);
+		if(arquivo.exists())
+			arquivo.delete();
 	}
 
 	@Override

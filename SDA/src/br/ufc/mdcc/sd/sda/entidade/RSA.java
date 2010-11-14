@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class RSA {
 	int tamPrimo;
-	BigInteger n, q, p;
+	BigInteger nprimo, q, p;
 	BigInteger modulo;
 	BigInteger chavePublica, chavePrivada;
 	private SecureRandom random = new SecureRandom();
@@ -18,16 +18,8 @@ public class RSA {
 		gerarChaves();
 	}
 
-	public BigInteger getModulo() {
-		return modulo;
-	}
-
-	public BigInteger getChavePublica() {
-		return chavePublica;
-	}
-
-	public BigInteger getChavePrivada() {
-		return chavePrivada;
+	public String getChavePublica() {
+		return chavePublica.toString()+"."+nprimo.toString();
 	}
 
 
@@ -38,7 +30,7 @@ public class RSA {
 
 	private void gerarChaves() {
 		
-		n = p.multiply(q);
+		nprimo = p.multiply(q);
 		
 		modulo = p.subtract(BigInteger.valueOf(1));
 		modulo = modulo.multiply(q.subtract(BigInteger.valueOf(1)));
@@ -47,14 +39,16 @@ public class RSA {
 			chavePublica = new BigInteger(2 * tamPrimo, new Random());
 		while ((chavePublica.compareTo(modulo) != -1)
 				|| (chavePublica.gcd(modulo).compareTo(BigInteger.valueOf(1)) != 0));
-		
+		System.out.println(getChavePublica());
 		chavePrivada = chavePublica.modInverse(modulo);
 	}
 
-	public BigInteger[] encripta(String mensagem) {
+	public static BigInteger[] encripta(String mensagem, String chavePublica) {
 		int i;
+		String[] chaves = chavePublica.split("\\.");
 		byte[] temp = new byte[1];
 		byte[] digitos = mensagem.getBytes();
+		String num = chavePublica.substring(chavePublica.length()/2);
 		BigInteger[] bigdigitos = new BigInteger[digitos.length];
 		for (i = 0; i < bigdigitos.length; i++) {
 			temp[0] = digitos[i];
@@ -62,14 +56,14 @@ public class RSA {
 		}
 		BigInteger[] encriptado = new BigInteger[bigdigitos.length];
 		for (i = 0; i < bigdigitos.length; i++)
-			encriptado[i] = bigdigitos[i].modPow(chavePublica, n);
+			encriptado[i] = bigdigitos[i].modPow(new BigInteger(chaves[0]), new BigInteger(chaves[1]));
 		return (encriptado);
 	}
 
 	public String desencripta(BigInteger[] encriptado) {
 		BigInteger[] desencriptado = new BigInteger[encriptado.length];
 		for (int i = 0; i < desencriptado.length; i++)
-			desencriptado[i] = encriptado[i].modPow(chavePrivada, n);
+			desencriptado[i] = encriptado[i].modPow(chavePrivada, nprimo);
 		char[] charArray = new char[desencriptado.length];
 		for (int i = 0; i < charArray.length; i++)
 			charArray[i] = (char) (desencriptado[i].intValue());
@@ -81,10 +75,10 @@ public class RSA {
 	
 	      RSA key = new RSA();
 	 
-	      String message = "12345wqr";
+	      String message = "Fabiano Tavares da Silva";
 
 	      
-	      BigInteger[] encrypt = key.encripta(message);
+	      BigInteger[] encrypt = RSA.encripta(message, key.getChavePublica());
 	      String decrypt = key.desencripta(encrypt);
 	      System.out.println("message   = " + message);
 	      System.out.print("encrpyted = " );
