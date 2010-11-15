@@ -1,10 +1,17 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Date;
 
-public class Ufid {
+import br.ufc.mdcc.sd.sda.util.FileUtil;
+
+public class Ufid implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4735297245960262863L;
 	private URI endereco;
 	private Date data = new Date();
 	private int numArquivo;
@@ -32,9 +39,10 @@ public class Ufid {
 	public URI getEndereco() {
 		return endereco;
 	}
-	public Date getData() {
-		Date newData = new Date(data.getTime()); 
-		return newData;
+	public String getData() {
+		 long l = this.data.getTime();
+		 String str = Long.toString(l);
+		return str;
 	}
 	public int getNumArquivo() {
 		return numArquivo;
@@ -72,6 +80,10 @@ public class Ufid {
 	@Override
 	public String toString(){
 		return endereco.getHost()+"_"+endereco.getPort()+"_"+data.getTime()+"_"+codVerificacao+"_"+permissao;
+	}
+	
+	public String getName() {
+		return this.getNumArquivo()+"_"+this.getEndereco().getHost()+"_"+this.getEndereco().getPort()+"_"+this.getData();
 	}
 	
 }

@@ -10,14 +10,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.FileSD;
 import br.ufc.mdcc.sd.sda.entidade.ModoAcesso;
 import br.ufc.mdcc.sd.sda.entidade.RSA;
@@ -29,7 +30,7 @@ public class FileUtil {
 	public static final String DIR_ROOT = "C:\\hardDisk";
 
 	public static void serializarFile(FileSD arq) {
-		String nome = DIR_ROOT + File.separator + arq.getName();
+		String nome = DIR_ROOT + File.separator + arq.getUfid().getName();
 		try {
 			ObjectOutput out = new ObjectOutputStream(
 					new FileOutputStream(nome));
@@ -44,7 +45,7 @@ public class FileUtil {
 
 	public static FileSD deserializarFile(Ufid ufid) throws InexistenteException {
 
-		String nome = DIR_ROOT + File.separator + ufid.getNumArquivo()+"_"+ufid.getEndereco()+"_"+ufid.getData();
+		String nome = DIR_ROOT + File.separator + ufid.getName();
 
 		FileSD object = null;
 		try {
@@ -132,6 +133,11 @@ public class FileUtil {
 	public static String criptografa(String chavePublica, String  mensagem){
 		BigInteger publicKey = new BigInteger(chavePublica);
 		return RSA.encripta(mensagem, chavePublica);
+	}
+	
+	public static String printData(Date data){
+		 SimpleDateFormat formatador = new SimpleDateFormat("yyyyMMdd");  
+		return formatador.format(data); 
 	}
 
 }

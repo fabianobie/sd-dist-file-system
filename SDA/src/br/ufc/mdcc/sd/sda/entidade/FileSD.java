@@ -1,8 +1,15 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
+import java.io.Serializable;
 
-public class FileSD {
+
+public class FileSD implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2393599192450021093L;
+
 	private Ufid ufid;
 	
 	private Descritor descritor;
@@ -38,9 +45,7 @@ public class FileSD {
 		this.dados = dados;
 	}
 
-	public String getName() {
-		return ufid.getNumArquivo()+"_"+ufid.getEndereco()+"_"+ufid.getData();
-	}
+	
 	
 		
 }

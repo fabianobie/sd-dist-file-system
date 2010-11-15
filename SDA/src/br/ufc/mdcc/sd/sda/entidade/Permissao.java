@@ -1,8 +1,13 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
-import java.math.BigInteger;
+import java.io.Serializable;
 
-public class Permissao {
+public class Permissao implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8300796717073591451L;
+
 	/**
 	 * Id do Usuario ou grupo que possui permissoes
 	 */
