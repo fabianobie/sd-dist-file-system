@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 
 import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
+import br.ufc.mdcc.sd.sda.exceptions.InexistenteException;
 import br.ufc.mdcc.sd.sda.exceptions.PosicaoIvalidaException;
 
 /**
@@ -16,19 +17,19 @@ import br.ufc.mdcc.sd.sda.exceptions.PosicaoIvalidaException;
  */
 public interface IServicoArquivo extends Remote {
 	
-	public byte[] read(Ufid ufid,int offset,int size) throws RemoteException ;
+	public byte[] read(Ufid ufid,int offset,int size) throws RemoteException, InexistenteException ;
 	
-	public void write(Ufid ufid,int offset, byte[] dados) throws RemoteException;
+	public void write(Ufid ufid,int offset, byte[] dados) throws RemoteException, InexistenteException;
 	
 	public Ufid create() throws RemoteException;
 	
-	public void truncate(Ufid ufid,int offset) throws RemoteException;
+	public void truncate(Ufid ufid,int offset) throws RemoteException , InexistenteException;
 	
-	public void delete(Ufid ufid) throws RemoteException;
+	public void delete(Ufid ufid) throws RemoteException, InexistenteException;
 	
-	public Descritor getAttributes(Ufid ufid) throws RemoteException;
+	public Descritor getAttributes(Ufid ufid) throws RemoteException, InexistenteException;
 	
-	public void setAttributes(Ufid ufid, Descritor descritor) throws RemoteException;
+	public void setAttributes(Ufid ufid, Descritor descritor) throws RemoteException, InexistenteException;
 	
-	public void getChavePublica() throws RemoteException;
+	public String getChavePublica() throws RemoteException;
 }

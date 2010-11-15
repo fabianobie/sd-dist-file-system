@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,14 +20,16 @@ import java.util.regex.Pattern;
 import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.FileSD;
 import br.ufc.mdcc.sd.sda.entidade.ModoAcesso;
+import br.ufc.mdcc.sd.sda.entidade.RSA;
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
+import br.ufc.mdcc.sd.sda.exceptions.InexistenteException;
 
 public class FileUtil {
 
 	public static final String DIR_ROOT = "C:\\hardDisk";
 
 	public static void serializarFile(FileSD arq) {
-		String nome = DIR_ROOT + File.separator + arq.getUfid();
+		String nome = DIR_ROOT + File.separator + arq.getName();
 		try {
 			ObjectOutput out = new ObjectOutputStream(
 					new FileOutputStream(nome));
@@ -39,9 +42,9 @@ public class FileUtil {
 
 	}
 
-	public static FileSD deserializarFile(Ufid ufid) {
+	public static FileSD deserializarFile(Ufid ufid) throws InexistenteException {
 
-		String nome = DIR_ROOT + File.separator + ufid;
+		String nome = DIR_ROOT + File.separator + ufid.getNumArquivo()+"_"+ufid.getEndereco()+"_"+ufid.getData();
 
 		FileSD object = null;
 		try {
@@ -50,10 +53,10 @@ public class FileUtil {
 					file));
 			object = (FileSD) in.readObject();
 			in.close();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e2) {
-			e2.printStackTrace();
+		} catch (Exception e) {
+			
+			throw new InexistenteException();
+			
 		}
 
 		return object;
@@ -91,10 +94,13 @@ public class FileUtil {
 		return dadosTotal;
 	}
 
-	public static boolean hasPermissao(Descritor descritor,
-			ModoAcesso modoacesso, int userId) {
-		// TODO Auto-generated method stub
-		return true;
+	public static boolean hasPermissao(String permissao, ModoAcesso modoacesso, int userId) {
+		
+			String[] codVerificao = permissao.split("_");
+			String numRandom = codVerificao[0];
+			String modos = codVerificao[1];
+			
+		return modos.contains(modoacesso.getValue());
 	}
 
 	public static ArrayList<String> buscaArquivos(HashMap arquivos, String regex) {
@@ -121,6 +127,11 @@ public class FileUtil {
 		} else {
 			return results;
 		}
+	}
+	
+	public static String criptografa(String chavePublica, String  mensagem){
+		BigInteger publicKey = new BigInteger(chavePublica);
+		return RSA.encripta(mensagem, chavePublica);
 	}
 
 }

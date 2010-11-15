@@ -7,12 +7,11 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 
-import br.ufc.mdcc.sd.sda.entidade.Arquivo;
 import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.FileSD;
 import br.ufc.mdcc.sd.sda.entidade.RSA;
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
-import br.ufc.mdcc.sd.sda.exceptions.PosicaoIvalidaException;
+import br.ufc.mdcc.sd.sda.exceptions.InexistenteException;
 import br.ufc.mdcc.sd.sda.util.FileUtil;
 
 public class ServicoArquivo extends UnicastRemoteObject implements
@@ -41,8 +40,9 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public byte[] read(Ufid ufid, int offset, int size) throws RemoteException {
-
+	public byte[] read(Ufid ufid, int offset, int size) throws RemoteException, InexistenteException {
+		
+		
 		FileSD arquivo = FileUtil.deserializarFile(ufid);
 
 		size = (size <= arquivo.getDados().length) ? size
@@ -62,19 +62,17 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 
 	@Override
 	public void write(Ufid ufid, int offset, byte[] dados)
-			throws RemoteException {
+			throws RemoteException, InexistenteException {
 
-		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
-
-		int size = arquivo.getDados().length;
-
-		byte[] tmpDados = new byte[size + dados.length];
+		FileSD arquivo =  FileUtil.deserializarFile(ufid);
+		
+		byte[] tmpDados = new byte[offset + dados.length];
 
 		for (int i = 0; i < tmpDados.length; i++) {
-			if (i < size)
+			if (i < offset)
 				tmpDados[i] = arquivo.getDados()[i];
 			else
-				tmpDados[i] = dados[i - size];
+				tmpDados[i] = dados[i - offset];
 		}
 
 		arquivo.setDados(tmpDados);
@@ -85,15 +83,15 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	public Ufid create() throws RemoteException {
 
 		Ufid ufid = new Ufid(URI_SD, new Date(), COUNT_FILE);
-
 		FileSD novoArquivo = new FileSD(ufid);
 		FileUtil.serializarFile(novoArquivo);
-		return null;
+		
+		return ufid;
 	}
 
 	@Override
-	public void truncate(Ufid ufid, int offset) throws RemoteException {
-		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
+	public void truncate(Ufid ufid, int offset) throws RemoteException, InexistenteException {
+		FileSD arquivo = (FileSD) FileUtil.deserializarFile(ufid);
 
 		byte[] tmpDados = new byte[offset];
 
@@ -113,21 +111,26 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	}
 
 	@Override
-	public Descritor getAttributes(Ufid ufid) throws RemoteException {
-		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
+	public Descritor getAttributes(Ufid ufid) throws RemoteException, InexistenteException {
+		FileSD arquivo = (FileSD) FileUtil.deserializarFile(ufid);
 		return arquivo.getDescritor();
 	}
 
 	@Override
 	public void setAttributes(Ufid ufid, Descritor descritor)
-			throws RemoteException {
-		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
+			throws RemoteException, InexistenteException {
+		FileSD arquivo = (FileSD) FileUtil.deserializarFile(ufid);
+		
+		arquivo.getUfid().setCodVerificacao(descritor.getListaAcesso().toString());
+		arquivo.getUfid().setPermissao(descritor.getListaAcesso());
 		arquivo.setDescritor(descritor);
+		
+		FileUtil.serializarFile(arquivo);
 	}
 
 	@Override
-	public void getChavePublica() throws RemoteException {
-		this.chaves.getChavePublica();
+	public String getChavePublica() throws RemoteException {
+		return this.chaves.getChavePublica();
 	}
 
 }

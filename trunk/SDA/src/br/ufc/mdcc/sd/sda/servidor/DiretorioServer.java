@@ -51,7 +51,7 @@ public class DiretorioServer {
 				e.printStackTrace();
 			}
 
-			while (true);
+			
 			
 		}
 	}
@@ -80,6 +80,10 @@ public class DiretorioServer {
 
 		}
 	}
+	
+	public static IServicoArquivo getServicoArquivo() {
+		return servicoArquivo;
+	}
 
 	public static void main(String[] args) throws InterruptedException {
 
@@ -88,11 +92,10 @@ public class DiretorioServer {
 
 		Thread t2 = new Thread(new ClienteDiretorio());
 		t2.start();
-
+		
+		while (true);
 	}
 	
-	public static IServicoArquivo getServicoArquivo() {
-		return servicoArquivo;
-	}
+
 
 }
