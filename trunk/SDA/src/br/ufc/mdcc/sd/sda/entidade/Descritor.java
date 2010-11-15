@@ -1,13 +1,15 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Descritor {
+public class Descritor implements Serializable{
+
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = -4679656268851738030L;
 	private double tamanho;
 	private Date criacao;
 	private Date modificacao;

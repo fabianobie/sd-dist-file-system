@@ -23,8 +23,9 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	private static final long serialVersionUID = 8598798164416572562L;
 
 	private static URI URI_SD;
-	private static final int COUNT_FILE = 0;
+	private static int COUNT_FILE = 1;
 	private RSA chaves = new RSA();
+	private static Ufid root;
 
 	/**
 	 * @throws RemoteException
@@ -33,7 +34,7 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	public ServicoArquivo() throws RemoteException {
 		super();
 		try {
-			URI_SD = new URI("localhost:1097");
+			URI_SD = new URI("localhost:1098");
 		} catch (URISyntaxException e) {
 			System.out.println("Erro de Sintaxe: Endereço errado !");
 		}
@@ -82,7 +83,7 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	@Override
 	public Ufid create() throws RemoteException {
 
-		Ufid ufid = new Ufid(URI_SD, new Date(), COUNT_FILE);
+		Ufid ufid = new Ufid(URI_SD, new Date(), COUNT_FILE++);
 		FileSD novoArquivo = new FileSD(ufid);
 		FileUtil.serializarFile(novoArquivo);
 		
@@ -133,4 +134,13 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 		return this.chaves.getChavePublica();
 	}
 
+	public static Ufid getRoot() {
+		return root;
+	}
+
+	public static void setRoot(Ufid root) {
+		ServicoArquivo.root = root;
+	}
+	
+	
 }

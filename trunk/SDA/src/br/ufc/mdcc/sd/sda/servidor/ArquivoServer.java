@@ -1,14 +1,24 @@
 package br.ufc.mdcc.sd.sda.servidor;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Date;
+import java.util.HashMap;
 
-import br.ufc.mdcc.sd.sda.servicos.IServicoArquivo;
+import br.ufc.mdcc.sd.sda.entidade.Descritor;
+import br.ufc.mdcc.sd.sda.entidade.FileSD;
+import br.ufc.mdcc.sd.sda.entidade.Permissao;
+import br.ufc.mdcc.sd.sda.entidade.TipoArquivo;
+import br.ufc.mdcc.sd.sda.entidade.Ufid;
 import br.ufc.mdcc.sd.sda.servicos.IServicoDiretorio;
 import br.ufc.mdcc.sd.sda.servicos.ServicoArquivo;
+import br.ufc.mdcc.sd.sda.util.FileUtil;
 
 /**
  * 
@@ -32,11 +42,16 @@ public class ArquivoServer {
 
 			try {
 				servicoArquivo = new ServicoArquivo();
+				servicoArquivo.setRoot(formatSistemaDeArquivo());
+				
 				Registry registryServidor = LocateRegistry.createRegistry(1098);
 				//Remote fileSkeleton = UnicastRemoteObject.exportObject(servicoArquivo);
-
+				
+				
+				
 				registryServidor.bind(nomeServicoArquivo, servicoArquivo);
-
+				
+				
 				System.out
 						.println("Registrando objeto: 'sistemaArquivo'\nBinding na porta 1099");
 				System.out.println("SERVIDOR EXECUTANDO...");
@@ -44,6 +59,12 @@ public class ArquivoServer {
 			} catch (AlreadyBoundException e) {
 				e.printStackTrace();
 			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -78,9 +99,33 @@ public class ArquivoServer {
 	public static IServicoDiretorio getServicoDiretorio() {
 		return servicoDiretorio;
 	}
+	
+	private static Ufid formatSistemaDeArquivo() throws URISyntaxException, IOException{
+		int userId = 1;
+		Ufid idRaiz = new Ufid(new URI("rmi://localhost:1098"), new Date(), 0);
+		FileSD fileRaiz = new FileSD(idRaiz);
+		Descritor descritor = new Descritor();
+		descritor.setCriacao(new Date());
+		Permissao permissao = new Permissao(userId, true, true, true, true, true);
+		descritor.setListaAcesso(permissao);
+		descritor.setModificacao(new Date());
+		descritor.setAlteracao(new Date());
+		descritor.setProprietario(userId);
+		descritor.setTamanho(0.0);
+		descritor.setTipo(TipoArquivo.DIRECTORY);
+		
+		fileRaiz.setDescritor(descritor);
+		HashMap<String,Ufid> diretorio = new HashMap<String, Ufid>();
+		
+		fileRaiz.setDados(FileUtil.serializarObjeto(diretorio));
+		
+		FileUtil.serializarFile(fileRaiz);
+		
+		return idRaiz;
+	}
 
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, URISyntaxException, IOException {
 		
 		Thread t1 = new Thread(new ServidorArquivo());
 		t1.start();
