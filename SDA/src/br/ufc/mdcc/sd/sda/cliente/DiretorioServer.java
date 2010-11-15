@@ -1,4 +1,4 @@
-package br.ufc.mdcc.sd.sda.servidor;
+package br.ufc.mdcc.sd.sda.cliente;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -21,10 +21,6 @@ public class DiretorioServer {
 	 */
 	public static ServicoDiretorio servicoDiretorio;
 	public static IServicoArquivo servicoArquivo;
-
-	public static void setServicoArquivo(IServicoArquivo servicoArquivo) {
-		DiretorioServer.servicoArquivo = servicoArquivo;
-	}
 
 	public static String nomeServicoArquivo = "sistemaArquivo";
 	public static String nomeServicoDiretorio = "sistemaDiretorio";
@@ -58,21 +54,19 @@ public class DiretorioServer {
 
 	private static class ClienteDiretorio implements Runnable {
 		public void run() {
-			boolean ok = false;
 			Registry registry;
-			while (!ok) {
+			while (true) {
 				try {
 
 					registry = LocateRegistry.getRegistry("127.0.0.1", 1098);
 					servicoArquivo = (IServicoArquivo) registry
 							.lookup(nomeServicoArquivo);
-					
+
 					System.out.println("Conectou com " + nomeServicoArquivo);
-					ok=true;
-					
+
 				} catch (RemoteException e) {
 					System.out.println("Servidor Desligado !");
-					ok = false;
+					
 				} catch (NotBoundException e) {
 					e.printStackTrace();
 				}
@@ -86,13 +80,9 @@ public class DiretorioServer {
 		Thread t1 = new Thread(new ServidorDiretorio());
 		t1.start();
 
-		Thread t2 = new Thread(new ClienteDiretorio());
-		t2.start();
+		//Thread t2 = new Thread(new ClienteDiretorio());
+		//t2.start();
 
-	}
-	
-	public static IServicoArquivo getServicoArquivo() {
-		return servicoArquivo;
 	}
 
 }

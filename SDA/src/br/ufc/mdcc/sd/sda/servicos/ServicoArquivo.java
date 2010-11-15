@@ -3,6 +3,8 @@ package br.ufc.mdcc.sd.sda.servicos;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 
 import br.ufc.mdcc.sd.sda.entidade.Arquivo;
@@ -13,41 +15,54 @@ import br.ufc.mdcc.sd.sda.entidade.Ufid;
 import br.ufc.mdcc.sd.sda.exceptions.PosicaoIvalidaException;
 import br.ufc.mdcc.sd.sda.util.FileUtil;
 
-public class ServicoArquivo implements IServicoArquivo {
+public class ServicoArquivo extends UnicastRemoteObject implements
+		IServicoArquivo {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8598798164416572562L;
 
 	private static URI URI_SD;
 	private static final int COUNT_FILE = 0;
 	private RSA chaves = new RSA();
 
 	/**
+	 * @throws RemoteException
 	 * 
 	 */
-	public ServicoArquivo() {
+	public ServicoArquivo() throws RemoteException {
 		super();
-		try { URI_SD = new URI("127.0.0.1:1097"); } 
-		catch (URISyntaxException e) { System.out.println("Erro de Sintaxe: Endereço errado !");}
+		try {
+			URI_SD = new URI("localhost:1097");
+		} catch (URISyntaxException e) {
+			System.out.println("Erro de Sintaxe: Endereço errado !");
+		}
 	}
 
 	@Override
-	public byte[] read(Ufid ufid, int offset, int size)
-			throws PosicaoIvalidaException {
+	public byte[] read(Ufid ufid, int offset, int size) throws RemoteException {
 
 		FileSD arquivo = FileUtil.deserializarFile(ufid);
 
 		size = (size <= arquivo.getDados().length) ? size
 				: arquivo.getDados().length - offset;
+		byte[] dados = null;
+		
+		if (size > 0) {
+			dados = new byte[size];
 
-		byte[] dados = new byte[size];
-
-		for (int i = 0; i < dados.length; i++) {
-			dados[i] = arquivo.getDados()[offset + i];
+			for (int i = 0; i < dados.length; i++) {
+				dados[i] = arquivo.getDados()[offset + i];
+			}
 		}
 
 		return dados;
 	}
 
 	@Override
-	public void write(Ufid ufid, int offset, byte[] dados) {
+	public void write(Ufid ufid, int offset, byte[] dados)
+			throws RemoteException {
 
 		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
 
@@ -67,27 +82,23 @@ public class ServicoArquivo implements IServicoArquivo {
 	}
 
 	@Override
-	public Ufid create() {
-		
-		Ufid ufid = new Ufid();
-		ufid.setData(new Date());
-		ufid.setEncriptado(false);
-		ufid.setEndereco(URI_SD);
-		ufid.setNumArquivo(COUNT_FILE);
-		
+	public Ufid create() throws RemoteException {
+
+		Ufid ufid = new Ufid(URI_SD, new Date(), COUNT_FILE);
+
 		FileSD novoArquivo = new FileSD(ufid);
 		FileUtil.serializarFile(novoArquivo);
 		return null;
 	}
 
 	@Override
-	public void truncate(Ufid ufid, int offset) {
+	public void truncate(Ufid ufid, int offset) throws RemoteException {
 		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
 
 		byte[] tmpDados = new byte[offset];
 
 		for (int i = 0; i < offset; i++) {
-				tmpDados[i] = arquivo.getDados()[i];
+			tmpDados[i] = arquivo.getDados()[i];
 		}
 
 		arquivo.setDados(tmpDados);
@@ -95,26 +106,27 @@ public class ServicoArquivo implements IServicoArquivo {
 	}
 
 	@Override
-	public void delete(Ufid ufid) {
-		File arquivo = new File(FileUtil.DIR_ROOT+File.separator+ufid);
-		if(arquivo.exists())
+	public void delete(Ufid ufid) throws RemoteException {
+		File arquivo = new File(FileUtil.DIR_ROOT + File.separator + ufid);
+		if (arquivo.exists())
 			arquivo.delete();
 	}
 
 	@Override
-	public Descritor getAttributes(Ufid ufid) {
+	public Descritor getAttributes(Ufid ufid) throws RemoteException {
 		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
 		return arquivo.getDescritor();
 	}
 
 	@Override
-	public void setAttributes(Ufid ufid, Descritor descritor) {
+	public void setAttributes(Ufid ufid, Descritor descritor)
+			throws RemoteException {
 		Arquivo arquivo = (Arquivo) FileUtil.deserializarFile(ufid);
 		arquivo.setDescritor(descritor);
 	}
 
 	@Override
-	public void getChavePublica() {
+	public void getChavePublica() throws RemoteException {
 		this.chaves.getChavePublica();
 	}
 

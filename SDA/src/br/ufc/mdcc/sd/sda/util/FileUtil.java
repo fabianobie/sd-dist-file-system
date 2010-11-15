@@ -9,9 +9,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.FileSD;
+import br.ufc.mdcc.sd.sda.entidade.ModoAcesso;
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
 
 public class FileUtil {
@@ -60,12 +67,60 @@ public class FileUtil {
 		return bout.toByteArray();
 	}
 
-	public static Object deserializarObjeto(byte[] dados) throws IOException, ClassNotFoundException {
+	public static Object deserializarObjeto(byte[] dados) throws IOException,
+			ClassNotFoundException {
 		ByteArrayInputStream bin = new ByteArrayInputStream(dados);
 		ObjectInputStream in = new ObjectInputStream(bin);
 		Object object = in.readObject();
 		in.close();
 		return object;
+	}
+
+	public static byte[] addbytes(byte[] dados, byte[] dadosTmp) {
+		int size = dados.length;
+
+		byte[] dadosTotal = new byte[size + dadosTmp.length];
+
+		for (int i = 0; i < dadosTotal.length; i++) {
+			if (i < size)
+				dadosTotal[i] = dados[i];
+			else
+				dadosTotal[i] = dadosTmp[i - size];
+		}
+
+		return dadosTotal;
+	}
+
+	public static boolean hasPermissao(Descritor descritor,
+			ModoAcesso modoacesso, int userId) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	public static ArrayList<String> buscaArquivos(HashMap arquivos, String regex) {
+		ArrayList<String> results = new ArrayList<String>();
+
+		Pattern p = Pattern.compile(regex);
+
+		Set<String> keys = arquivos.keySet();
+		Iterator<String> ite = keys.iterator();
+
+		while (ite.hasNext()) {
+			String candidate = ite.next();
+			Matcher m = p.matcher(candidate);
+			System.out.println("Attempting to match: " + candidate + " to "
+					+ regex);
+			if (m.matches()) {
+				System.out.println("it matches");
+				results.add(candidate);
+			}
+		}
+
+		if (results.isEmpty()) {
+			return null;
+		} else {
+			return results;
+		}
 	}
 
 }
