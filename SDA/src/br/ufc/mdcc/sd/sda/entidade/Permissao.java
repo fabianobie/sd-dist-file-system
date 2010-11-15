@@ -83,7 +83,7 @@ public class Permissao {
 	
 	@Override
 	public String toString(){
-		String permissao="";
+		String permissao="_"+idEntidade;
 		
 		if(read) permissao+="r"; else permissao+="-";
 		if(write) permissao+="w"; else permissao+="-";

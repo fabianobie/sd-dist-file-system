@@ -43,24 +43,37 @@ public class RSA {
 		chavePrivada = chavePublica.modInverse(modulo);
 	}
 
-	public static BigInteger[] encripta(String mensagem, String chavePublica) {
-		int i;
+	public static String encripta(String mensagem, String chavePublica) {
 		String[] chaves = chavePublica.split("\\.");
 		byte[] temp = new byte[1];
 		byte[] digitos = mensagem.getBytes();
 		String num = chavePublica.substring(chavePublica.length()/2);
 		BigInteger[] bigdigitos = new BigInteger[digitos.length];
-		for (i = 0; i < bigdigitos.length; i++) {
+		for (int i = 0; i < bigdigitos.length; i++) {
 			temp[0] = digitos[i];
 			bigdigitos[i] = new BigInteger(temp);
 		}
 		BigInteger[] encriptado = new BigInteger[bigdigitos.length];
-		for (i = 0; i < bigdigitos.length; i++)
+		for (int i = 0; i < bigdigitos.length; i++)
 			encriptado[i] = bigdigitos[i].modPow(new BigInteger(chaves[0]), new BigInteger(chaves[1]));
-		return (encriptado);
+		
+		String result ="";
+		for (int i=0; i<encriptado.length;i++) {
+	    	  result+=encriptado[i];
+	    	  if(i+1<encriptado.length)
+	    		  result+=".";
+	     }
+		
+		return result;
 	}
 
-	public String desencripta(BigInteger[] encriptado) {
+	public String desencripta(String msgmCrip) {
+		String[] encrBigInt = msgmCrip.split("\\.");
+		BigInteger[] encriptado = new BigInteger[encrBigInt.length];
+		for (int i=0; i<encriptado.length;i++) {
+	    	  encriptado[i] = new BigInteger(encrBigInt[i]);
+	     }
+		
 		BigInteger[] desencriptado = new BigInteger[encriptado.length];
 		for (int i = 0; i < desencriptado.length; i++)
 			desencriptado[i] = encriptado[i].modPow(chavePrivada, nprimo);
@@ -78,14 +91,12 @@ public class RSA {
 	      String message = "Fabiano Tavares da Silva";
 
 	      
-	      BigInteger[] encrypt = RSA.encripta(message, key.getChavePublica());
+	      String encrypt = RSA.encripta(message, key.getChavePublica());
 	      String decrypt = key.desencripta(encrypt);
+	      
 	      System.out.println("message   = " + message);
 	      System.out.print("encrpyted = " );
-	      for (BigInteger bigInteger : encrypt) {
-	    	  System.out.print(bigInteger);
-	      }
-	      
+	      System.out.println(encrypt);
 	      System.out.println("\ndecrypted = " + decrypt);
 	   }
 

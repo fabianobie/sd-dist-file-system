@@ -37,6 +37,10 @@ public class FileSD {
 	public void setDados(byte[] dados) {
 		this.dados = dados;
 	}
+
+	public String getName() {
+		return ufid.getNumArquivo()+"_"+ufid.getEndereco()+"_"+ufid.getData();
+	}
 	
 		
 }

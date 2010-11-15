@@ -25,10 +25,10 @@ public class Ufid {
 		this.endereco = endereco;
 		this.data = data;
 		this.numArquivo = numArquivo;
-		this.codVerificacao = Math.round(Math.random()*100)+"_"+permissao;
+		//this.codVerificacao = Math.round(Math.random()*100)+"_"+permissao;
 	}
 
-
+	
 	public URI getEndereco() {
 		return endereco;
 	}
@@ -48,6 +48,9 @@ public class Ufid {
 	}
 	public String getCodVerificacao() {
 		return codVerificacao;
+	}
+	public void setCodVerificacao(String codVerificacao) {
+		this.codVerificacao = codVerificacao;
 	}
 	public Permissao getPermissao() {
 		return permissao;
