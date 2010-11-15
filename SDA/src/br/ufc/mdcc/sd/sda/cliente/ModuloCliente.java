@@ -1,6 +1,5 @@
 package br.ufc.mdcc.sd.sda.cliente;
 
-import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Date;
@@ -65,8 +64,9 @@ public class ModuloCliente {
 					
 				} else if (tipo.equals(TipoArquivo.FILE)) {
 					
-					File arquivo = new File(nome);
+					StringBuffer arquivo = new StringBuffer("Arquivo Vazio");
 					servArquivo.write(ufid, 0,FileUtil.serializarObjeto(arquivo));
+					
 				}
 
 			} catch (InexistenteException e1) {
