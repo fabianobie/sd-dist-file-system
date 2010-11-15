@@ -1,5 +1,7 @@
 package br.ufc.mdcc.sd.sda.entidade;
 
+import java.math.BigInteger;
+
 public class Permissao {
 	/**
 	 * Id do Usuario ou grupo que possui permissoes
@@ -77,6 +79,19 @@ public class Permissao {
 
 	public void setSetAtt(boolean setAtt) {
 		this.setAtt = setAtt;
+	}
+	
+	@Override
+	public String toString(){
+		String permissao="";
+		
+		if(read) permissao+="r"; else permissao+="-";
+		if(write) permissao+="w"; else permissao+="-";
+		if(delete) permissao+="d"; else permissao+="-";
+		if(getAtt) permissao+="g"; else permissao+="-";
+		if(setAtt) permissao+="s"; else permissao+="-";
+		
+		return permissao;
 	}
 
 }

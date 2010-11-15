@@ -1,4 +1,4 @@
-package br.ufc.mdcc.sd.sda.servidor;
+package br.ufc.mdcc.sd.sda.cliente;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
@@ -73,8 +73,8 @@ public class ArquivoServer {
 
 	public static void main(String[] args) throws InterruptedException {
 		
-		Thread t1 = new Thread(new ServidorArquivo());
-		t1.start();
+		//Thread t1 = new Thread(new ServidorArquivo());
+		//t1.start();
 		
 		Thread t2 = new Thread(new ClienteArquivo());
 		t2.start();

@@ -8,10 +8,7 @@ public class Arquivo extends FileSD{
 	
 	public Arquivo(Ufid ufid) {
 		super(ufid);
-		// TODO Auto-generated constructor stub
+		
 	}
-
-	
-
 	
 }

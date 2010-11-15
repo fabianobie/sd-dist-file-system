@@ -8,10 +8,27 @@ public class Ufid {
 	private URI endereco;
 	private Date data = new Date();
 	private int numArquivo;
-	private String codVerificacao="Teste";
-	private String permissao;
+	private String codVerificacao;
+	private Permissao permissao;
 	private boolean encriptado;
 	
+	
+	/**
+	 * @param endereco
+	 * @param data
+	 * @param numArquivo
+	 * @param permissao
+	 * @param encriptado
+	 */
+	public Ufid(URI endereco, Date data, int numArquivo) {
+		super();
+		this.endereco = endereco;
+		this.data = data;
+		this.numArquivo = numArquivo;
+		this.codVerificacao = Math.round(Math.random()*100)+"_"+permissao;
+	}
+
+
 	public URI getEndereco() {
 		return endereco;
 	}
@@ -32,7 +49,7 @@ public class Ufid {
 	public String getCodVerificacao() {
 		return codVerificacao;
 	}
-	public String getPermissao() {
+	public Permissao getPermissao() {
 		return permissao;
 	}
 	public void setEndereco(URI endereco) {
@@ -45,10 +62,10 @@ public class Ufid {
 		this.numArquivo = numArquivo;
 	}
 
-	public void setPermissao(String permissao) {
+	public void setPermissao(Permissao permissao) {
 		this.permissao = permissao;
 	}
-	
+
 	@Override
 	public String toString(){
 		return endereco.getHost()+"_"+endereco.getPort()+"_"+data.getTime()+"_"+codVerificacao+"_"+permissao;

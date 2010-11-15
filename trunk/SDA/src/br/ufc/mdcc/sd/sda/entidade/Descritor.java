@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Descritor extends File {
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private double tamanho;
 	private Date criacao;
 	private Date modificacao;
@@ -64,14 +68,9 @@ public class Descritor extends File {
 		this.listaAcesso = listaAcesso;
 	}
 
-	
 	public Descritor(File parent, String child) {
 		super(parent, child);
 	}
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 }
