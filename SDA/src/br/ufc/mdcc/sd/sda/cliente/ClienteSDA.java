@@ -10,7 +10,6 @@ import br.ufc.mdcc.sd.sda.servicos.IServicoDiretorio;
 
 public class ClienteSDA {
 	
-	
 
 	/**
 	 * 
@@ -78,8 +77,6 @@ public class ClienteSDA {
 	public static IServicoArquivo getServicoArquivo() {
 		return servicoArquivo;
 	}
-
-
 
 	public static void main(String[] args) throws InterruptedException {
 		
