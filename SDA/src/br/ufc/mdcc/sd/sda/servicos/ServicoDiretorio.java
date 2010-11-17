@@ -152,11 +152,12 @@ public class ServicoDiretorio extends UnicastRemoteObject implements
 			byte[] dadosTmp = null;
 			byte[] dados = null;
 			int i = 0;
-			do {
+			/*do {
 				dadosTmp = servFile.read(ufidDir, i, 10);
 				dados = FileUtil.addbytes(dados, dadosTmp);
 				i += 10;
-			} while (dadosTmp != null);
+			} while (dadosTmp != null);*/
+			dados = servFile.read(ufidDir, i, 10);
 
 			HashMap<String, Ufid> diretorio = null;
 

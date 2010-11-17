@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import br.ufc.mdcc.sd.sda.entidade.TipoArquivo;
 import br.ufc.mdcc.sd.sda.servicos.IServicoArquivo;
 import br.ufc.mdcc.sd.sda.servicos.IServicoDiretorio;
 
@@ -22,8 +23,8 @@ public class ClienteSDA {
 	public static String nomeServicoDiretorio = "sistemaDiretorio";
 
 
-	private static class ClienteArquivo implements Runnable {
-		public void run() {
+	
+		public static void clienteArquivo() {
 			boolean ok = false;
 			Registry registry;
 			while (!ok) {
@@ -43,10 +44,9 @@ public class ClienteSDA {
 			}
 			}
 		}
-	}
 	
-	private static class ClienteDiretorio implements Runnable {
-		public void run() {
+	
+		public static void clienteDiretorio() {
 			boolean ok = false;
 			Registry registry;
 			while (!ok) {
@@ -68,7 +68,6 @@ public class ClienteSDA {
 			}
 
 		}
-	}
 	
 	public static IServicoDiretorio getServicoDiretorio() {
 		return servicoDiretorio;
@@ -77,18 +76,13 @@ public class ClienteSDA {
 	public static IServicoArquivo getServicoArquivo() {
 		return servicoArquivo;
 	}
-
-	public static void main(String[] args) throws InterruptedException {
+	
+	public static void iniciarCliente(){
+		clienteDiretorio();
+		clienteArquivo();
 		
-		Thread t1 = new Thread(new ClienteDiretorio());
-		t1.start();
-
-		
-		Thread t2 = new Thread(new ClienteArquivo());
-		t2.start();
-		
-		while(true);
 	}
+
 	
 	
 	

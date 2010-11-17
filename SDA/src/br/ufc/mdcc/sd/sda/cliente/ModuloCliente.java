@@ -17,19 +17,33 @@ import br.ufc.mdcc.sd.sda.util.FileUtil;
 
 public class ModuloCliente {
 
-	private static Ufid root;
-	private static int userId;
+	private  Ufid root;
+	private  int userId;
 
+	/**
+	 * @param root
+	 * @param userId
+	 * @param sda
+	 * @throws RemoteException 
+	 */
+	
+	public ModuloCliente() throws RemoteException {
+		
+	}
+	
+	
 	public String[] listarArquivos(String dir) {
 
 		return null;
 	}
+	
 
 	public boolean criarArquivo(String nome, TipoArquivo tipo)
 			throws RemoteException {
 		IServicoDiretorio servDiretorio = ClienteSDA.getServicoDiretorio();
 		IServicoArquivo servArquivo = ClienteSDA.getServicoArquivo();
-
+		
+		root = servArquivo.getRoot();
 		Ufid ufid = null;
 
 		try {
@@ -43,11 +57,12 @@ public class ModuloCliente {
 			ufid = servArquivo.create();
 
 			try {
-
+				root = servArquivo.getRoot();
 				servDiretorio.AddName(root, nome, ufid, userId);
 
 				Descritor descritor = new Descritor();
 				descritor.setCriacao(new Date());
+				System.out.println(root.getPermissao());
 				descritor.setListaAcesso(root.getPermissao());
 				descritor.setModificacao(new Date());
 				descritor.setAlteracao(new Date());
@@ -93,4 +108,22 @@ public class ModuloCliente {
 		return false;
 	}
 
+	public Ufid getRoot() {
+		return root;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	
+	public void setRoot(Ufid root) {
+		this.root = root;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	
 }

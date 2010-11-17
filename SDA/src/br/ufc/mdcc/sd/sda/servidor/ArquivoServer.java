@@ -37,8 +37,8 @@ public class ArquivoServer {
 	public static String nomeServicoArquivo = "sistemaArquivo";
 	public static String nomeServicoDiretorio = "sistemaDiretorio";
 
-	private static class ServidorArquivo implements Runnable {
-		public void run() {
+	
+		public static void servidorArquivo() {
 
 			try {
 				servicoArquivo = new ServicoArquivo();
@@ -69,12 +69,10 @@ public class ArquivoServer {
 				e.printStackTrace();
 			}
 			
-			
 		}
-	}
 	
-	private static class ClienteArquivo implements Runnable {
-		public void run() {
+	 
+		public static void clienteArquivo() {
 			boolean ok = false;
 			Registry registry;
 			while (!ok) {
@@ -94,7 +92,6 @@ public class ArquivoServer {
 			}
 			}
 		}
-	}
 	
 	public static IServicoDiretorio getServicoDiretorio() {
 		return servicoDiretorio;
@@ -113,7 +110,7 @@ public class ArquivoServer {
 		descritor.setProprietario(userId);
 		descritor.setTamanho(0.0);
 		descritor.setTipo(TipoArquivo.DIRECTORY);
-		
+		fileRaiz.getUfid().setPermissao(permissao);
 		fileRaiz.setDescritor(descritor);
 		HashMap<String,Ufid> diretorio = new HashMap<String, Ufid>();
 		
@@ -127,11 +124,10 @@ public class ArquivoServer {
 
 	public static void main(String[] args) throws InterruptedException, URISyntaxException, IOException {
 		
-		Thread t1 = new Thread(new ServidorArquivo());
-		t1.start();
+		servidorArquivo();
 		
-		Thread t2 = new Thread(new ClienteArquivo());
-		t2.start();
+		clienteArquivo();
+	
 		
 		while(true);
 	}
