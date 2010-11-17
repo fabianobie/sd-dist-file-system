@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
 import java.util.Date;
 
 import br.ufc.mdcc.sd.sda.entidade.Descritor;
@@ -25,7 +26,7 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	private static URI URI_SD;
 	private static int COUNT_FILE = 1;
 	private RSA chaves = new RSA();
-	private static Ufid root;
+	private Ufid root;
 
 	/**
 	 * @throws RemoteException
@@ -34,7 +35,7 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	public ServicoArquivo() throws RemoteException {
 		super();
 		try {
-			URI_SD = new URI("localhost:1098");
+			URI_SD = new URI("rmi://localhost:1098");
 		} catch (URISyntaxException e) {
 			System.out.println("Erro de Sintaxe: Endereço errado !");
 		}
@@ -43,22 +44,21 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	@Override
 	public byte[] read(Ufid ufid, int offset, int size) throws RemoteException, InexistenteException {
 		
-		
 		FileSD arquivo = FileUtil.deserializarFile(ufid);
-
-		size = (size <= arquivo.getDados().length) ? size
-				: arquivo.getDados().length - offset;
-		byte[] dados = null;
+		byte[] dadoTotal = arquivo.getDados();
 		
-		if (size > 0) {
-			dados = new byte[size];
-
-			for (int i = 0; i < dados.length; i++) {
-				dados[i] = arquivo.getDados()[offset + i];
-			}
-		}
-
-		return dados;
+		/*
+		int to = (size+offset <= arquivo.getDados().length) ? size+offset-1
+				: arquivo.getDados().length-1;
+		if(offset<to){
+			byte[] dados = Arrays.copyOfRange(dadoTotal, offset, to);
+			return dados;
+		}else{
+			return null;
+		}*/
+		
+		return dadoTotal;
+		
 	}
 
 	@Override
@@ -67,6 +67,7 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 
 		FileSD arquivo =  FileUtil.deserializarFile(ufid);
 		
+		/*
 		byte[] tmpDados = new byte[offset + dados.length];
 
 		for (int i = 0; i < tmpDados.length; i++) {
@@ -75,8 +76,8 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 			else
 				tmpDados[i] = dados[i - offset];
 		}
-
-		arquivo.setDados(tmpDados);
+		*/
+		arquivo.setDados(dados);
 		FileUtil.serializarFile(arquivo);
 	}
 
@@ -121,7 +122,7 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	public void setAttributes(Ufid ufid, Descritor descritor)
 			throws RemoteException, InexistenteException {
 		FileSD arquivo = (FileSD) FileUtil.deserializarFile(ufid);
-		
+		System.out.println(descritor.getListaAcesso());
 		arquivo.getUfid().setCodVerificacao(descritor.getListaAcesso().toString());
 		arquivo.getUfid().setPermissao(descritor.getListaAcesso());
 		arquivo.setDescritor(descritor);
@@ -133,13 +134,14 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	public String getChavePublica() throws RemoteException {
 		return this.chaves.getChavePublica();
 	}
-
-	public static Ufid getRoot() {
+	
+	@Override
+	public  Ufid getRoot() {
 		return root;
 	}
 
-	public static void setRoot(Ufid root) {
-		ServicoArquivo.root = root;
+	public void setRoot(Ufid root) {
+		this.root = root;
 	}
 	
 	

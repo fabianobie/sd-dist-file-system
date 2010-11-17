@@ -29,8 +29,8 @@ public class DiretorioServer {
 	public static String nomeServicoArquivo = "sistemaArquivo";
 	public static String nomeServicoDiretorio = "sistemaDiretorio";
 
-	private static class ServidorDiretorio implements Runnable {
-		public void run() {
+	 
+		public static void servidorDiretorio() {
 
 			try {
 				servicoDiretorio = new ServicoDiretorio();
@@ -54,10 +54,10 @@ public class DiretorioServer {
 			
 			
 		}
-	}
+	
 
-	private static class ClienteDiretorio implements Runnable {
-		public void run() {
+	 
+		public static void clienteDiretorio() {
 			boolean ok = false;
 			Registry registry;
 			while (!ok) {
@@ -79,7 +79,7 @@ public class DiretorioServer {
 			}
 
 		}
-	}
+
 	
 	public static IServicoArquivo getServicoArquivo() {
 		return servicoArquivo;
@@ -87,12 +87,10 @@ public class DiretorioServer {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		Thread t1 = new Thread(new ServidorDiretorio());
-		t1.start();
-
-		Thread t2 = new Thread(new ClienteDiretorio());
-		t2.start();
+		servidorDiretorio();
 		
+		clienteDiretorio();
+	
 		while (true);
 	}
 	

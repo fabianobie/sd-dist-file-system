@@ -81,18 +81,23 @@ public class FileUtil {
 	}
 
 	public static byte[] addbytes(byte[] dados, byte[] dadosTmp) {
-		int size = dados.length;
+		if (dados == null)
+			return dadosTmp;
+		if(dadosTmp == null)
+			return dados;
+		else{
+			int size = dados.length;
 
-		byte[] dadosTotal = new byte[size + dadosTmp.length];
+			byte[] dadosTotal = new byte[size + dadosTmp.length];
 
-		for (int i = 0; i < dadosTotal.length; i++) {
-			if (i < size)
-				dadosTotal[i] = dados[i];
-			else
-				dadosTotal[i] = dadosTmp[i - size];
+			for (int i = 0; i < dadosTotal.length; i++) {
+				if (i < size)
+					dadosTotal[i] = dados[i];
+				else
+					dadosTotal[i] = dadosTmp[i - size];
+			}
+			return dadosTotal;
 		}
-
-		return dadosTotal;
 	}
 
 	public static boolean hasPermissao(String permissao, ModoAcesso modoacesso, int userId) {
