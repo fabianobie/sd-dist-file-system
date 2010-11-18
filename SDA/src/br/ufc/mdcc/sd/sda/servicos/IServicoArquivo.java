@@ -34,4 +34,6 @@ public interface IServicoArquivo extends Remote {
 	public String getChavePublica() throws RemoteException;
 	
 	public Ufid getRoot() throws RemoteException;
+
+	public void setRoot(Ufid ufid,int userId) throws RemoteException;
 }

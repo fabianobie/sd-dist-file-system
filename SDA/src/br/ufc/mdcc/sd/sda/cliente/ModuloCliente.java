@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashMap;
 
+import br.ufc.mdcc.sd.sda.entidade.Arquivo;
 import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.ModoAcesso;
 import br.ufc.mdcc.sd.sda.entidade.TipoArquivo;
@@ -18,27 +19,59 @@ import br.ufc.mdcc.sd.sda.util.FileUtil;
 public class ModuloCliente {
 
 	private  Ufid root;
-	private  int userId;
-
-	/**
-	 * @param root
-	 * @param userId
-	 * @param sda
-	 * @throws RemoteException 
-	 */
 	
 	public ModuloCliente() throws RemoteException {
 		
 	}
 	
+	public void iniciarSistemaArquivo(int userId) throws RemoteException{
+		ClienteSDA.getServicoArquivo().setRoot(null,userId);
+	}
 	
-	public String[] listarArquivos(String dir) {
+	public String[] lerDiretorio(String nome,int userId) throws RemoteException{
+		IServicoDiretorio servDiretorio = ClienteSDA.getServicoDiretorio();
+		IServicoArquivo servArquivo = ClienteSDA.getServicoArquivo();
+		root = servArquivo.getRoot();
+		Ufid ufid = null;
+		
+		try {
 
+			ufid = servDiretorio.Lookup(root, nome, ModoAcesso.READ, userId);
+			servArquivo.setRoot(ufid,userId);
+			root = servArquivo.getRoot();
+			return servDiretorio.GetNames(ufid, nome);
+			
+		} catch (InexistenteException e) {
+			System.out.println("Arqivo inexistente");
+			
+		} catch (PermissaoException e) {
+			System.out.println("Permissao negada");
+		}
+		
 		return null;
 	}
 	
+	public void inserirArquivo(String nome , byte[] dados, int userId) throws RemoteException {
+		
+		if(criarArquivo(nome, TipoArquivo.FILE,userId)){
+			IServicoArquivo servArquivo = ClienteSDA.getServicoArquivo();
+			IServicoDiretorio servDiretorio = ClienteSDA.getServicoDiretorio();
+			root = servArquivo.getRoot();
+			
+			try {
+				Ufid ufid = servDiretorio.Lookup(root, nome, ModoAcesso.WRITE, userId);
+				servArquivo.write(ufid, 0, dados);
+				
+			} catch (InexistenteException e) {
 
-	public boolean criarArquivo(String nome, TipoArquivo tipo)
+			} catch (PermissaoException e) {
+
+			}
+		}
+	
+	}
+
+	public boolean criarArquivo(String nome, TipoArquivo tipo,int userId)
 			throws RemoteException {
 		IServicoDiretorio servDiretorio = ClienteSDA.getServicoDiretorio();
 		IServicoArquivo servArquivo = ClienteSDA.getServicoArquivo();
@@ -58,7 +91,6 @@ public class ModuloCliente {
 
 			try {
 				root = servArquivo.getRoot();
-				servDiretorio.AddName(root, nome, ufid, userId);
 
 				Descritor descritor = new Descritor();
 				descritor.setCriacao(new Date());
@@ -71,10 +103,16 @@ public class ModuloCliente {
 				descritor.setTipo(tipo);
 
 				servArquivo.setAttributes(ufid, descritor);
+				
+				root = servArquivo.getRoot();
+				servDiretorio.AddName(root, nome, ufid, userId);
+
 
 				if (tipo.equals(TipoArquivo.DIRECTORY)) {
-					
+					root = servArquivo.getRoot();
 					HashMap<String, Ufid> diretorio = new HashMap<String, Ufid>();
+					diretorio.put(".", ufid);
+					diretorio.put("..", root);
 					servArquivo.write(ufid, 0,FileUtil.serializarObjeto(diretorio));
 					
 				} else if (tipo.equals(TipoArquivo.FILE)) {
@@ -112,18 +150,11 @@ public class ModuloCliente {
 		return root;
 	}
 
-	public int getUserId() {
-		return userId;
-	}
-
 	
 	public void setRoot(Ufid root) {
 		this.root = root;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
+	
 	
 }
