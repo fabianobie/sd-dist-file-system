@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.Diretorio;
+import br.ufc.mdcc.sd.sda.entidade.FileSD;
 import br.ufc.mdcc.sd.sda.entidade.ModoAcesso;
 import br.ufc.mdcc.sd.sda.entidade.Permissao;
 import br.ufc.mdcc.sd.sda.entidade.RSA;
@@ -49,7 +50,7 @@ public class ServicoDiretorio extends UnicastRemoteObject implements
 		
 		if(ufidResult!=null){
 			
-			String permissao = ufidResult.getCodVerificacao();
+			/*String permissao = ufidResult.getCodVerificacao();
 			
 			ufidResult.setCodVerificacao(FileUtil.criptografa(
 													DiretorioServer.
@@ -57,13 +58,13 @@ public class ServicoDiretorio extends UnicastRemoteObject implements
 													.getChavePublica(),
 													permissao)
 											);
-			
-			temPermissao = FileUtil.hasPermissao(permissao, modoacesso, userId);
+			*/
+			//temPermissao = FileUtil.hasPermissao(permissao, modoacesso, userId);
 
-			if (!temPermissao) {
-				System.out.println("Usuario " + userId + " não tem permissão de "+ modoacesso);
-				throw new PermissaoException();
-			}
+			//if (!temPermissao) {
+		//		System.out.println("Usuario " + userId + " não tem permissão de "+ modoacesso);
+			//	throw new PermissaoException();
+			//}
 		}else{
 			
 			System.out.println("Arquivo inexistente ");
@@ -77,8 +78,9 @@ public class ServicoDiretorio extends UnicastRemoteObject implements
 	public void AddName(Ufid ufidDir, String nome, Ufid ufid, int userId)
 			throws RemoteException, InexistenteException, PermissaoException  {
 		
+		FileSD arquivo = (FileSD) FileUtil.deserializarFile(ufid);
 		HashMap<String, Ufid> diretorio = getDiretorio(ufidDir);
-		diretorio.put(nome, ufid);
+		diretorio.put(nome, arquivo.getUfid());
 		
 		try {
 			
@@ -124,9 +126,7 @@ public class ServicoDiretorio extends UnicastRemoteObject implements
 			throws RemoteException, InexistenteException {
 		HashMap<String, Ufid> diretorio = getDiretorio(ufid);
 		
-		FileUtil.buscaArquivos(diretorio, expressao);
-		
-		return null;
+		return FileUtil.buscaArquivos(diretorio, expressao);
 	}
 	
 //////////////////////////////////////////////////////////////

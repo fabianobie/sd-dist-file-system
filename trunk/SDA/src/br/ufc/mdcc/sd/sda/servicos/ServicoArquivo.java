@@ -1,16 +1,22 @@
 package br.ufc.mdcc.sd.sda.servicos;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 
 import br.ufc.mdcc.sd.sda.entidade.Descritor;
 import br.ufc.mdcc.sd.sda.entidade.FileSD;
+import br.ufc.mdcc.sd.sda.entidade.Permissao;
 import br.ufc.mdcc.sd.sda.entidade.RSA;
+import br.ufc.mdcc.sd.sda.entidade.TipoArquivo;
 import br.ufc.mdcc.sd.sda.entidade.Ufid;
 import br.ufc.mdcc.sd.sda.exceptions.InexistenteException;
 import br.ufc.mdcc.sd.sda.util.FileUtil;
@@ -107,7 +113,7 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 
 	@Override
 	public void delete(Ufid ufid) throws RemoteException {
-		File arquivo = new File(FileUtil.DIR_ROOT + File.separator + ufid);
+		File arquivo = new File(FileUtil.DIR_ROOT + File.separator + ufid.getName());
 		if (arquivo.exists())
 			arquivo.delete();
 	}
@@ -139,9 +145,57 @@ public class ServicoArquivo extends UnicastRemoteObject implements
 	public  Ufid getRoot() {
 		return root;
 	}
-
-	public void setRoot(Ufid root) {
-		this.root = root;
+	
+	@Override
+	public void setRoot(Ufid ufid,int userId) throws RemoteException {
+		
+			try {
+				if(ufid == null)
+					this.root = criarRaiz(userId);
+				else
+					this.root = ufid;
+				
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
+	
+	
+	private static Ufid criarRaiz(int userId) throws URISyntaxException, IOException{
+		Ufid idRaiz = new Ufid(new URI("rmi://localhost:1098"), new Date(0), 0);
+		Permissao permissao = new Permissao(userId, true, true, true, true, true);
+		idRaiz.setPermissao(permissao);
+		FileSD fileRaiz = new FileSD(idRaiz);
+		try {
+			
+			fileRaiz = FileUtil.deserializarFile(idRaiz);
+			
+		} catch (InexistenteException e) {
+			
+			Descritor descritor = new Descritor();
+			descritor.setCriacao(new Date());
+			descritor.setListaAcesso(permissao);
+			descritor.setModificacao(new Date());
+			descritor.setAlteracao(new Date());
+			descritor.setProprietario(userId);
+			descritor.setTamanho(0.0);
+			descritor.setTipo(TipoArquivo.DIRECTORY);
+			fileRaiz.getUfid().setPermissao(permissao);
+			fileRaiz.setDescritor(descritor);
+			HashMap<String,Ufid> diretorio = new HashMap<String, Ufid>();
+			
+			fileRaiz.getUfid().setCodVerificacao(permissao.toString());
+			fileRaiz.getUfid().setPermissao(permissao);
+			
+			diretorio.put(".", fileRaiz.getUfid());
+			fileRaiz.setDados(FileUtil.serializarObjeto(diretorio));
+			FileUtil.serializarFile(fileRaiz);
+		}
+			
+		
+		return idRaiz;
 	}
 	
 	

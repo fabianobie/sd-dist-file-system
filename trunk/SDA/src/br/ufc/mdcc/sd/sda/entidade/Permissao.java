@@ -88,7 +88,7 @@ public class Permissao implements Serializable{
 	
 	@Override
 	public String toString(){
-		String permissao="_"+idEntidade;
+		String permissao=idEntidade+"_";
 		
 		if(read) permissao+="r"; else permissao+="-";
 		if(write) permissao+="w"; else permissao+="-";

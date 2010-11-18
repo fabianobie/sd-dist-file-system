@@ -6,12 +6,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -109,7 +111,7 @@ public class FileUtil {
 		return modos.contains(modoacesso.getValue());
 	}
 
-	public static ArrayList<String> buscaArquivos(HashMap arquivos, String regex) {
+	public static String[] buscaArquivos(HashMap arquivos, String regex) {
 		ArrayList<String> results = new ArrayList<String>();
 
 		Pattern p = Pattern.compile(regex);
@@ -119,30 +121,54 @@ public class FileUtil {
 
 		while (ite.hasNext()) {
 			String candidate = ite.next();
+			results.add(candidate);
+			/*String candidate = ite.next();
 			Matcher m = p.matcher(candidate);
-			System.out.println("Attempting to match: " + candidate + " to "
+			System.out.println("Casando padroes: " + candidate + " para "
 					+ regex);
 			if (m.matches()) {
-				System.out.println("it matches");
 				results.add(candidate);
-			}
+			}*/
 		}
-
-		if (results.isEmpty()) {
-			return null;
-		} else {
-			return results;
+		
+		String[] dirs = new String[results.size()];
+		for (int i=0;i< results.size();i++) {
+			dirs[i] = results.get(i);
 		}
+		return dirs;
 	}
 	
 	public static String criptografa(String chavePublica, String  mensagem){
-		BigInteger publicKey = new BigInteger(chavePublica);
 		return RSA.encripta(mensagem, chavePublica);
 	}
 	
 	public static String printData(Date data){
 		 SimpleDateFormat formatador = new SimpleDateFormat("yyyyMMdd");  
 		return formatador.format(data); 
+	}
+	
+	public static byte[] getBytesFromFile(File file) throws IOException {
+		InputStream is = new FileInputStream(file);
+		long length = file.length();
+		if (length > Integer.MAX_VALUE) {
+		}
+		
+		byte[] bytes = new byte[(int) length];
+		
+		int offset = 0;
+		int numRead = 0;
+		while (offset < bytes.length
+				&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+			offset += numRead;
+		}
+		
+		if (offset < bytes.length) {
+			throw new IOException("Não poderemos ler completamente o arquivo "
+					+ file.getName());
+		}
+
+		is.close();
+		return bytes;
 	}
 
 }
